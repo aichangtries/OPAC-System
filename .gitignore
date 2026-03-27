@@ -1,0 +1,17 @@
+# Compiled Java files
+*.class
+
+# IDE Settings
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# MySQL backup files
+*.sql.bak
