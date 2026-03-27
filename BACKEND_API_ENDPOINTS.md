@@ -1,7 +1,107 @@
-# LQRY Backend API Endpoints
+# LQRY Backend API Reference
+
+**Project Name:** LQRY (Library Query System)  
+**System:** Online Public Access Catalog REST API  
+**Version:** 1.0  
+**Date:** March 27, 2026
+
+---
 
 ## Configuration
-**Base URL:** `http://localhost:8080/api` (update in HTML: line 732)
+
+**API Base URL:** `http://<API_HOST>:<API_PORT>/api`
+
+**Placeholders:**
+- `<API_HOST>` = Server hostname or IP (default: `localhost`)
+- `<API_PORT>` = API listening port (default: `5000`)
+
+**Example URLs:**
+- **Local Development:** `http://localhost:5000/api`
+- **Deployed Server:** `https://your-domain.com/api`
+- **Custom Port:** `http://localhost:8080/api`
+
+### Update Frontend Configuration
+
+In `index.html` (around line 1241), update:
+
+```javascript
+const API_BASE_URL = 'http://<API_HOST>:<API_PORT>/api';
+```
+
+Example:
+```javascript
+// Local development
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Or for deployed server
+const API_BASE_URL = 'https://your-api-domain.com/api';
+```
+
+---
+
+## Running the API Server
+
+### Prerequisites
+- Java JDK 8+
+- MySQL Server running with `opac_system` database
+- All `.java` files compiled
+
+### Start the Server
+
+Navigate to project directory:
+```bash
+cd <PROJECT_DIRECTORY>
+```
+
+Run the API server:
+```bash
+java -cp ".;mysql-connector-j-9.6.0.jar" APIServer
+```
+
+**On macOS/Linux, use `:` instead of `;`:**
+```bash
+java -cp ".:mysql-connector-j-9.6.0.jar" APIServer
+```
+
+**Expected Output:**
+```
+╔══════════════════════════════════════════╗
+║  📡 OPAC REST API SERVER                 ║
+║  Listening on http://localhost:5000     ║
+╚══════════════════════════════════════════╝
+```
+
+### Verify Server is Running
+
+```bash
+curl http://localhost:5000/api/books
+```
+
+---
+
+## API Response Format
+
+All endpoints return **JSON** format responses.
+
+### Success Response (2xx)
+```json
+[
+  {
+    "bookId": 1,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    ...
+  }
+]
+```
+
+### Error Response (4xx, 5xx)
+```json
+{
+  "error": "Description of what went wrong",
+  "status": 400
+}
+```
 
 ---
 

@@ -1,39 +1,94 @@
-# LQRY CLI System - Setup & Run Guide
+# LQRY - OPAC System | CLI Setup & Run Guide
 
-## 🎯 Prerequisites
-
-Ensure you have:
-- **Java JDK 8+** (Test with: `java -version`)
-- **MySQL 5.7+** (Test with: `mysql --version`)
-- **MySQL Server running** on `localhost:3306`
+**Project Name:** LQRY (Library Query System)  
+**System:** Online Public Access Catalog (OPAC)  
+**Version:** 1.0  
+**Date:** March 27, 2026
 
 ---
 
-## 📋 Step 1: Database Setup
+## 🎯 Prerequisites
 
-### 1.1 Create the Database and Load Schema
+Ensure you have the following installed on your system:
 
-```bash
-# Connect to MySQL
-mysql -u root -p
+- **Java JDK 8 or higher** 
+  - Verify installation: `java -version`
+  - Download: https://www.oracle.com/java/technologies/downloads/
 
-# Enter password (default is empty, just press Enter)
+- **MySQL Server 5.7 or higher**
+  - Verify installation: `mysql --version`
+  - Download: https://dev.mysql.com/downloads/mysql/
+  - **Ensure MySQL Server is running** (listening on `localhost:3306`)
+
+- **MySQL JDBC Driver** (included in project)
+  - File: `mysql-connector-j-9.6.0.jar`
+
+---
+
+## 📋 Step 1: Prepare Project Environment
+
+### 1.1 Extract Project Files
+
+Extract all project files to your desired location:
+```
+<PROJECT_DIRECTORY>/
+├── OPACSystem.java
+├── APIServer.java
+├── Database.java
+├── Book.java, BookDAO.java
+├── Borrower.java, BorrowerDAO.java
+├── Transaction.java, TransactionDAO.java
+├── Payment.java, PaymentDAO.java
+├── OverdueCalculator.java
+├── DeweyDecimal.java
+├── opac_system.sql
+├── index.html (frontend)
+└── mysql-connector-j-9.6.0.jar
 ```
 
-Once in MySQL prompt:
+**Replace `<PROJECT_DIRECTORY>` with your actual path.**
+
+- **Windows example:** `C:\Users\YourName\Projects\OPAC-System`
+- **macOS/Linux example:** `/Users/YourName/Projects/OPAC-System`
+
+### 1.2 Verify JDBC Driver
+
+Ensure `mysql-connector-j-9.6.0.jar` is present in `<PROJECT_DIRECTORY>`:  
+```bash
+ls <PROJECT_DIRECTORY>/mysql-connector-j-9.6.0.jar
+```
+
+---
+
+## 📋 Step 2: Database Setup
+
+### 2.1 Create the Database and Load Schema
+
+**Connect to MySQL:**
+```bash
+mysql -u <DB_USERNAME> -p
+```
+
+**Enter your MySQL password** (default is often empty for local installations)
+
+**At the MySQL prompt, execute:**
 ```sql
--- Create database
+-- Create the OPAC database
 CREATE DATABASE opac_system;
 
--- Use the database
+-- Switch to the database
 USE opac_system;
 
--- Import the schema and data
-SOURCE opac_system.sql;
+-- Load the schema and initial data
+SOURCE <PROJECT_DIRECTORY>/opac_system.sql;
 
--- Verify (check if tables exist)
+-- Verify tables were created
 SHOW TABLES;
 ```
+
+**Placeholders:**
+- `<DB_USERNAME>` = Your MySQL username (default: `root`)
+- `<PROJECT_DIRECTORY>` = Full path to your project folder
 
 **Expected output:**
 ```
@@ -43,86 +98,106 @@ SHOW TABLES;
 | books                 |
 | borrowers             |
 | dewey_classifications |
+| payments              |
 | transactions          |
 +-----------------------+
 ```
 
-### 1.2 Verify Initial Data
+### 2.2 Verify Initial Data
 
 ```sql
-SELECT * FROM books;
-SELECT * FROM borrowers;
-SELECT * FROM transactions;
+SELECT COUNT(*) FROM books;
+SELECT COUNT(*) FROM borrowers;
+SELECT COUNT(*) FROM transactions;
 ```
 
 **Expected results:**
-- 4 books (The Great Gatsby, Clean Code, Astronomy Today, To Kill a Mockingbird)
-- 3 borrowers (John Doe, Jane Smith, Michael Johnson)
-- 1 transaction (Book 4 borrowed by John Doe)
+- 4 books in database
+- 3 borrowers in database
+- Sample transaction records
 
 ---
 
-## 🔧 Step 2: Compile Java Files
+## 🔧 Step 3: Configure Database Connection (if needed)
 
-Navigate to the project directory:
+If your MySQL is running on a **different host, port, or credentials**, edit `Database.java`:
 
-```bash
-cd "C:\Users\Alessandra Dagdag\Downloads\DIPROGLANG (2)\DIPROGLANG"
+```java
+// Find this section in Database.java:
+private static final String URL = "jdbc:mysql://localhost:3306/opac_system";
+private static final String USER = "root";      // Change if needed
+private static final String PASSWORD = "";     // Enter your password
 ```
 
-### Option A: Compile All Files
+**Placeholders to update:**
+- `localhost` → Your MySQL host (default: localhost)
+- `3306` → Your MySQL port (default: 3306)
+- `root` → Your MySQL username
+- `""` → Your MySQL password
+
+After changes, recompile: `javac -cp ".;mysql-connector-j-9.6.0.jar" Database.java`
+
+---
+
+## 🔧 Step 4: Compile Java Files
+
+Navigate to your project directory:
+
+```bash
+cd <PROJECT_DIRECTORY>
+```
+
+### Option A: Compile All Files (Recommended)
 
 ```bash
 javac -cp ".;mysql-connector-j-9.6.0.jar" *.java
 ```
 
-**This compiles:**
-- OPACSystem.java
-- Database.java
-- Book.java, BookDAO.java
-- Borrower.java, BorrowerDAO.java
-- Transaction.java, TransactionDAO.java
-- DeweyDecimal.java
-- OverdueCalculator.java
-- DatabaseSetup.java
+**On macOS/Linux, use `:` instead of `;`:**
+```bash
+javac -cp ".:mysql-connector-j-9.6.0.jar" *.java
+```
 
 ### Option B: Compile Individual Files (if needed)
 
 ```bash
 javac -cp ".;mysql-connector-j-9.6.0.jar" Database.java
-javac -cp ".;mysql-connector-j-9.6.0.jar" Book.java
-javac -cp ".;mysql-connector-j-9.6.0.jar" BookDAO.java
-# ... and so on
+javac -cp ".;mysql-connector-j-9.6.0.jar" Book.java BookDAO.java
 ```
 
 ### Verify Compilation
 
 Check for `.class` files:
 ```bash
-dir *.class
+ls *.class
 ```
 
-You should see `.class` files for all Java files.
+You should see `.class` files for all compiled Java files.
 
 ---
 
-## 🚀 Step 3: Run the OPAC System
+## 🚀 Step 5: Run the OPAC CLI System
 
 ```bash
 java -cp ".;mysql-connector-j-9.6.0.jar" OPACSystem
 ```
 
-### Expected Output:
+**On macOS/Linux, use `:` instead of `;`:**
+```bash
+java -cp ".:mysql-connector-j-9.6.0.jar" OPACSystem
+```
+
+### Expected Output
 
 ```
   ╔══════════════════════════════════════════╗
   ║       OPAC SYSTEM  - Library Manager     ║
   ╚══════════════════════════════════════════╝
 
-  [DB] Connected to the database!
+  [DB] Connected to database successfully!
 
   ┌─────────────────────────────┐
-  │         MAIN MENU           │
+  │      ADMINISTRATOR MENU      │
   ├─────────────────────────────┤
   │  1. Book Management         │
   │  2. Borrow / Return         │
@@ -132,12 +207,23 @@ java -cp ".;mysql-connector-j-9.6.0.jar" OPACSystem
   │  0. Exit                    │
   └─────────────────────────────┘
   
-  Enter choice: 
+  Enter choice: _
 ```
+
+If you see this menu, **the CLI is running successfully!**
+
+---
+```bash
+dir *.class
+```
+
+You should see `.class` files for all Java files.
 
 ---
 
-## 📚 Step 4: Using the CLI Menu
+## � Step 6: Using the OPAC CLI
+
+### Main Menu Options
 
 ### Main Menu Options
 
@@ -203,25 +289,92 @@ When you make changes in the CLI (add/edit/delete books), the **website will aut
 
 ## 🛠️ Troubleshooting
 
-### Error: "Failed to connect to the database!"
+### ❌ Error: "Failed to connect to the database!"
 
-**Solution:** 
-- Check MySQL is running: `mysql -u root -p`
-- Verify database exists: `SHOW DATABASES;`
-- Check username/password in `Database.java` (currently: user="root", password="")
+**Causes:**
+- MySQL Server is not running
+- Database doesn't exist
+- Wrong username/password credentials
 
-### Error: "ClassNotFoundException: com.mysql.cj.jdbc.Driver"
+**Solutions:**
+1. **Start MySQL Server:**
+   - Windows: Open "Services" and start MySQL
+   - macOS: `brew services start mysql`
+   - Linux: `sudo systemctl start mysql`
 
-**Solution:**
-- Verify `mysql-connector-j-9.6.0.jar` is in the same directory
-- Ensure classpath includes the JAR: `-cp ".;mysql-connector-j-9.6.0.jar"`
+2. **Verify database exists:**
+   ```bash
+   mysql -u <DB_USERNAME> -p
+   SHOW DATABASES;
+   ```
 
-### Error: "Book not found" when trying to edit
+3. **Check Database.java configuration** (see Step 3)
 
-**Solution:**
-- View all books first: `1 → 1`
-- Check the correct Book ID
-- Remember: IDs start from 1, not 0
+---
+
+### ❌ Error: "ClassNotFoundException: com.mysql.cj.jdbc.Driver"
+
+**Causes:**
+- `mysql-connector-j-9.6.0.jar` is missing or in wrong location
+- Classpath doesn't include the JAR file
+
+**Solutions:**
+1. **Verify JAR exists:**
+   ```bash
+   ls <PROJECT_DIRECTORY>/mysql-connector-j-9.6.0.jar
+   ```
+
+2. **Ensure correct compilation command:**
+   - Windows: `javac -cp ".;mysql-connector-j-9.6.0.jar" *.java`
+   - macOS/Linux: `javac -cp ".:mysql-connector-j-9.6.0.jar" *.java`
+
+---
+
+### ❌ Error: "Port 5000 is already in use" (When running API Server)
+
+**Solution:** The API server is already running or another program uses port 5000
+- Kill the existing process or use a different port in APIServer.java:
+  ```java
+  server.bind(new InetSocketAddress(5001), 0); // Change 5001 to any available port
+  ```
+
+---
+
+### ❌ Error: "Book not found" when trying to edit
+
+**Causes:**
+- Book ID doesn't exist
+- Wrong ID format
+
+**Solutions:**
+1. View all books first to get valid IDs
+2. Book IDs start from 1, not 0
+3. Check database: `SELECT book_id, title FROM books;`
+
+---
+
+### ❌ Changes in CLI don't appear on website
+
+**Causes:**
+- API Server not running
+- Frontend not refreshing
+- Incorrect API URL in HTML
+
+**Solutions:**
+1. **Start API Server:**
+   ```bash
+   java -cp ".;mysql-connector-j-9.6.0.jar" APIServer
+   ```
+
+2. **Verify API is working:**
+   ```bash
+   curl http://localhost:5000/api/books
+   ```
+
+3. **Check API URL in HTML** (index.html, line 1241):
+   ```javascript
+   const API_BASE_URL = 'http://localhost:5000/api';
+   ```
 
 ---
 
