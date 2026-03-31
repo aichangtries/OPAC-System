@@ -99,11 +99,37 @@ CREATE TABLE `dewey_classifications` (
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`book_id`, `title`, `author`, `category`, `dewey_decimal`, `is_available`) VALUES
-(1, 'The Great Gatsby', 'F. Scott Fitzgerald', 'Literature', '810 - American Literature', 1),
-(2, 'Clean Code', 'Robert Martin', 'Programming', '000 - General Works', 1),
-(3, 'Astronomy Today', 'Eric Chaisson', 'Science', '500 - Science', 1),
-(4, 'To Kill a Mockingbird', 'Harper Lee', 'Literature', '810 - American Literature', 0);
+INSERT INTO books (title, author, category, dewey_decimal) VALUES
+('The Silent Forest', 'Maria Santos', 'Fiction', '800 - Literature'),
+('Ocean of Stars', 'Daniel Cruz', 'Science Fiction', '800 - Literature'),
+('Love Beyond Time', 'Angela Reyes', 'Romance', '800 - Literature'),
+('The Hidden Temple', 'Carlos Mendoza', 'Adventure', '900 - History & Geography'),
+('Basics of Programming', 'John Lim', 'Technology', '000 - Computer Science, Information & General'),
+('World Atlas for Kids', 'Unknown', 'Geography', '900 - History & Geography'),
+('Filipino Folk Tales', 'Liza Ramos', 'Children''s Story', '800 - Literature'),
+('The Last Warrior', 'Miguel Torres', 'Fiction', '800 - Literature'),
+('Introduction to Psychology', 'Dr. Helen Yu', 'Psychology', '100 - Philosophy & Psychology'),
+('Earth and Life Science', 'Peter Gonzales', 'Science', '500 - Science'),
+('Cooking Made Easy', 'Chef Ramon', 'Cooking', '600 - Technology & Applied Sciences'),
+('The Great Adventure', 'Anna Lopez', 'Children''s Story', '800 - Literature'),
+('Philippine History Simplified', 'Jose Bautista', 'History', '900 - History & Geography'),
+('Algebra Essentials', 'Mark David', 'Mathematics', '500 - Science'),
+('Creative Writing Guide', 'Sofia Perez', 'Education', '000 - Computer Science, Information & General'),
+('Digital Marketing 101', 'Kevin Tan', 'Business', '300 - Social Sciences'),
+('The Mystery Island', 'Carla Dizon', 'Mystery', '800 - Literature'),
+('Space Exploration', 'Neil Ramirez', 'Science', '500 - Science'),
+('Human Anatomy Basics', 'Dr. Luis Garcia', 'Medicine', '600 - Technology & Applied Sciences'),
+('English Grammar Made Simple', 'Patricia Ong', 'Education', '400 - Language'),
+('The Lost City', 'Marco Villanueva', 'Adventure', '900 - History & Geography'),
+('Ethics and Society', 'Fr. Antonio Cruz', 'Philosophy', '100 - Philosophy & Psychology'),
+('Basic Economics', 'Robert Chan', 'Economics', '300 - Social Sciences'),
+('Photography for Beginners', 'Alex Chua', 'Arts', '700 - Arts & Recreation'),
+('The Enchanted Garden', 'Nina Flores', 'Children''s Story', '800 - Literature'),
+('Music Theory Basics', 'Carla Santos', 'Music', '700 - Arts & Recreation'),
+('The Science of Climate', 'Victor Reyes', 'Science', '500 - Science'),
+('Business Management Principles', 'Henry Co', 'Business', '300 - Social Sciences'),
+('The Time Traveler', 'Ian Cortez', 'Science Fiction', '800 - Literature'),
+('Introduction to Philosophy', 'Angela Cruz', 'Philosophy', '100 - Philosophy & Psychology');
 
 --
 -- Dumping data for table `borrowers`
